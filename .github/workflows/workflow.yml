@@ -35,6 +35,12 @@ jobs:
       - name: Run API Test using newman
         run: newman run ./tests/RestfulBook-collection.postman_collection.json -e ./tests/RestfulBook-environment.postman_environment.json --reporters cli,htmlextra --reporter-htmlextra-export ./result/testReport.html
 
+      - name: Archive API test report
+        uses: actions/upload-artifact@v3
+        with:
+          name : Newman report
+          path : ./result/testReport.html
+
   convert-postman-to-k6:
     name: Convert postman collection to k6 script
     runs-on: ubuntu-latest
@@ -49,3 +55,9 @@ jobs:
 
       - name: Convert collection
         run: postman-to-k6 ./tests/RestfulBook-collection.postman_collection.json -e ./tests/RestfulBook-environment.postman_environment.json -o ./result/k6-script.js
+
+      - name: Archive k6 script
+        uses: actions/upload-artifact@v3
+        with:
+          name : k6 script
+          path : ./result/k6-script.js
