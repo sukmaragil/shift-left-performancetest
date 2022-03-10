@@ -61,3 +61,31 @@ jobs:
         with:
           name : k6 script
           path : ./result/k6-script.js
+
+  run-k6-perf-test:
+    name: Run performance test
+    needs: convert-postman-to-k6
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Download script from convert result
+        uses: actions/download-artifact@v3
+        with:
+          name: ./result/k6-script.js
+      - name: Install k6
+        run: brew install k6
+
+      - name: Modify script
+        run: |
+          sed -i '2iimport { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js"\' ./result/k6-script.js
+          echo "$(cat ./config/report.js)" >> ./result/k6-script.js
+
+      - name: Run k6
+        run: k6 run ./result/k6-script.js
+
+      - name: Upload k6 result
+        uses: actions/upload-artifact@v3
+        with:
+          name: k6 result
+          path: ./result/k6-report.html

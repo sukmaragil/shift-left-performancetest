@@ -1,0 +1,1 @@
+export function handleSummary(data) {return {"./result/k6-report.html": htmlReport(data),};}
