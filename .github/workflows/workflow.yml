@@ -73,6 +73,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: k6 script
+          path: ./result/k6-script.js
+          
       - name: Install k6
         run: brew install k6
 
