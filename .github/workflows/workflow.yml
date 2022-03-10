@@ -74,14 +74,14 @@ jobs:
         with:
           name: k6 script
           path: ./result/k6-script.js
-          
+
       - name: Install k6
         run: brew install k6
 
       - name: Modify script
         run: |
-          sed -i '2iimport { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js"\' ./result/k6-script.js
-          echo "$(cat ./config/report.js)" >> ./result/k6-script.js
+          sed -i '2iimport { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js"\' result/k6-script.js
+          echo "$(cat config/report.js)" >> result/k6-script.js
 
       - name: Run k6
         run: k6 run ./result/k6-script.js
