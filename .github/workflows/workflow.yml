@@ -68,11 +68,11 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Download script from convert result
         uses: actions/download-artifact@v3
         with:
-          name: ./result/k6-script.js
+          name: k6 script
       - name: Install k6
         run: brew install k6
 
