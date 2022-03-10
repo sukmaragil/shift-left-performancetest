@@ -65,7 +65,7 @@ jobs:
   run-k6-perf-test:
     name: Run performance test
     needs: convert-postman-to-k6
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
@@ -76,12 +76,16 @@ jobs:
           path: ./result/k6-script.js
 
       - name: Install k6
-        run: brew install k6
+        run: |
+          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
 
       - name: Modify script
         run: |
-          sed -i '2iimport { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js"\' result/k6-script.js
-          echo "$(cat config/report.js)" >> result/k6-script.js
+          sed -i '2iimport { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js"\' ./result/k6-script.js
+          echo "$(cat config/report.js)" >> ./result/k6-script.js
 
       - name: Run k6
         run: k6 run ./result/k6-script.js
