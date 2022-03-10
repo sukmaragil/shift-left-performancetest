@@ -17,27 +17,35 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  api-test:
+    name: Run API Testing using newman
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
       - name: Run node check version
         run: node -v
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
       
-      - name: Install newman
-        run: npm install -g newman
-
-      - name: Install newman reporter
-        run: npm install -g newman-reporter-htmlextra
+      - name: Install newman & newman reporter
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
 
       - name: Run API Test using newman
         run: newman run ./tests/RestfulBook-collection.postman_collection.json -e ./tests/RestfulBook-environment.postman_environment.json --reporters cli,htmlextra --reporter-htmlextra-export ./result/testReport.html
+
+  convert-postman-to-k6:
+    name: Convert postman collection to k6 script
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Check node version & Install postman-to-k6
+        run: |
+          node -v
+          npm install -g @apideck/postman-to-k6
+          postman-to-k6 --version
+
+      - name: Convert collection
+        run: postman-to-k6 ./tests/RestfulBook-collection.postman_collection.json -e ./tests/RestfulBook-environment.postman_environment.json -o ./result/k6-script.js
